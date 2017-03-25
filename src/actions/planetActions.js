@@ -15,6 +15,8 @@ export function loadPeoplePlanets(planets) {
     )).then(allPlanets => {
       planets = [...allPlanets];
       dispatch(loadPeoplePlanetsSuccess(planets));
+    }).catch(error => {
+      throw(error);
     });
   };
 }
