@@ -21,15 +21,14 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Header loading={this.props.loading}/>
         <AppBar onLeftIconButtonTouchTap={this.onRequestChange} title="Star Wars People"/>
+        <Header loading={this.props.loading}/>
         <Drawer open={this.state.open} onRequestChange={this.onRequestChange} docked={false}>
           <MenuItem onTouchTap={this.onRequestChange} containerElement={<Link to="/"/>}>Home</MenuItem>
           <MenuItem onTouchTap={this.onRequestChange} containerElement={<Link to="people"/>}>People</MenuItem>
         </Drawer>
         {this.props.children}
       </div>
-
     );
   }
 }

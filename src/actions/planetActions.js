@@ -10,9 +10,11 @@ export function loadPeoplePlanetsSuccess(planets) {
 
 export function loadPeoplePlanets(planets) {
   return function (dispatch) {
-    Promise.all(planets.map(url =>
-      fetch(url).then(response => response.json())
-    )).then(allPlanets => {
+    dispatch(beginAjaxCall());
+    Promise.all(planets.map(url => {
+        return fetch(url).then(response => response.json());
+      })
+    ).then(allPlanets => {
       planets = [...allPlanets];
       dispatch(loadPeoplePlanetsSuccess(planets));
     }).catch(error => {
