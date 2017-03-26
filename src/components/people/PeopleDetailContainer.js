@@ -12,7 +12,7 @@ import PeopleDetail from "./PeopleDetail";
 import {Quotes} from "./Quotes";
 
 
-class ManagePeoplePage extends React.Component {
+class PeopleDetailContainer extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -73,12 +73,12 @@ class ManagePeoplePage extends React.Component {
   }
 }
 
-ManagePeoplePage.propTypes = {
+PeopleDetailContainer.propTypes = {
   person: PropTypes.object,
   actions: PropTypes.object.isRequired
 };
 
-ManagePeoplePage.contextTypes = {
+PeopleDetailContainer.contextTypes = {
   router: PropTypes.object
 };
 
@@ -110,4 +110,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ManagePeoplePage);
+export default connect(mapStateToProps, mapDispatchToProps)(PeopleDetailContainer);
