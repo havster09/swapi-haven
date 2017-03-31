@@ -25,8 +25,6 @@ class PeopleDetailContainer extends React.Component {
     this.yodaQuote = this.yodaQuote.bind(this);
   }
 
-  // lifecycle hook to update State once ajax returns courses data and find course is triggered
-  // reinit component state without redux
   componentWillReceiveProps(nextProps) {
     if (this.props.person.name !== nextProps.person.name) {
       this.setState({person: Object.assign({}, nextProps.person)});
