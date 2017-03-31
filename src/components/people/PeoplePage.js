@@ -9,6 +9,8 @@ import {Card, CardTitle, CardText} from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
+
 
 
 class PeoplePage extends React.Component {
@@ -75,7 +77,7 @@ class PeoplePage extends React.Component {
     });
 
 
-    const displayPeople = peopleCopy.filter(person => person.name.includes(this.state.searchFilter))
+    const displayPeople = peopleCopy.filter(person => person.name.toLowerCase().includes(this.state.searchFilter.toLowerCase()))
       .map((person) => {
         const personId = person.url.split('http://swapi.co/api/people/').pop().replace('/', '');
         return (
