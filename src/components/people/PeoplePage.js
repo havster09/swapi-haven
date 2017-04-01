@@ -1,15 +1,12 @@
 import React from 'react';
-import {Link} from 'react-router';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as PropTypes from "react/lib/ReactPropTypes";
-import Rating from 'react-rating';
 import * as peopleActions from '../../actions/peopleActions';
 import {Card, CardTitle, CardText} from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
-import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from 'material-ui/FlatButton';
+import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow} from 'material-ui/Table';
+import PeopleDisplay from './PeopleDisplay';
 
 
 
@@ -18,15 +15,19 @@ class PeoplePage extends React.Component {
     super(props, context);
     this.state = {searchFilter: '', ratings: []};
     this.onSearchChange = this.onSearchChange.bind(this);
-    this.onRateChange = this.onRateChange.bind(this);
-    this.getPlanet = this.getPlanet.bind(this);
+    this.handleGetPlanet = this.handleGetPlanet.bind(this);
+    this.handleOnRateChange = this.handleOnRateChange.bind(this);
+  }
+
+  componentDidMount() {
+
   }
 
   onSearchChange(event) {
     this.setState({searchFilter: event.target.value});
   }
 
-  getPlanet(person) {
+  handleGetPlanet(person) {
     const planetItem = this.props.planets.find((planet) => planet.url === person.homeworld);
     if (planetItem) {
       return planetItem.name;
@@ -36,7 +37,7 @@ class PeoplePage extends React.Component {
     }
   }
 
-  onRateChange(rate, event) {
+  handleOnRateChange(rate, event) {
     const ratedPersonName = event.target.closest('tr').attributes['data-sw-row'].value;
     const filteredRatings = this.state.ratings.filter((rating) => rating.name !== ratedPersonName);
     const existingRating = this.state.ratings.find((rating) => rating.name === ratedPersonName);
@@ -57,8 +58,8 @@ class PeoplePage extends React.Component {
   }
 
   render() {
-    let peopleCopy = [...this.props.people];
-    peopleCopy.forEach((person) => {
+    let peopleSortedSearched = [...this.props.people];
+    peopleSortedSearched.forEach((person) => {
       const ratingItem = this.state.ratings.find((rating) => rating.name === person.name);
       if (ratingItem) {
         person.rating = ratingItem.value;
@@ -67,7 +68,7 @@ class PeoplePage extends React.Component {
         person.rating = 1;
       }
     });
-    peopleCopy.sort((a, b) => {
+    peopleSortedSearched.sort((a, b) => {
       if (a.rating < b.rating) {
         return 1;
       }
@@ -77,20 +78,8 @@ class PeoplePage extends React.Component {
     });
 
 
-    const displayPeople = peopleCopy.filter(person => person.name.toLowerCase().includes(this.state.searchFilter.toLowerCase()))
-      .map((person) => {
-        const personId = person.url.split('http://swapi.co/api/people/').pop().replace('/', '');
-        return (
-          <TableRow key={person.name} data-sw-row={person.name}>
-            <TableRowColumn>{person.name}</TableRowColumn>
-            <TableRowColumn>{person.birth_year}</TableRowColumn>
-            <TableRowColumn>{person.gender}</TableRowColumn>
-            <TableRowColumn>{this.getPlanet(person)}</TableRowColumn>
-            <TableRowColumn><Rating stop={5} onClick={this.onRateChange} initialRate={person.rating}/></TableRowColumn>
-            <TableRowColumn><RaisedButton label={`View`}
-                                          containerElement={<Link to={`/people/${personId}`}/>}/></TableRowColumn>
-          </TableRow>);
-      });
+    const displayPeople = peopleSortedSearched.filter(person => person.name.toLowerCase().includes(this.state.searchFilter.toLowerCase()))
+      .map((person) => <PeopleDisplay key={person.url.split('http://swapi.co/api/people/').pop().replace('/', '')} person={person} getPlanet={this.handleGetPlanet} onRateChange={this.handleOnRateChange}/>);
     return (
       <Card>
         <CardTitle title="People" subtitle="from a galaxy far, far away"/>

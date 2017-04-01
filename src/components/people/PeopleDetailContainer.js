@@ -25,6 +25,12 @@ class PeopleDetailContainer extends React.Component {
     this.yodaQuote = this.yodaQuote.bind(this);
   }
 
+  componentDidMount() {
+    if(!this.props.person) {
+      this.goBack();
+    }
+  }
+
   componentWillReceiveProps(nextProps) {
     if (this.props.person.name !== nextProps.person.name) {
       this.setState({person: Object.assign({}, nextProps.person)});
@@ -93,7 +99,7 @@ function getPersonById(people, personId) {
 
 function mapStateToProps(state, ownProps) {
   const personId = ownProps.params.id;
-  let person = {name: null};
+  let person;
   if (personId && state.people.length > 0) {
     person = getPersonById(state.people, personId);
   }
