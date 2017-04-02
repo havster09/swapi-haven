@@ -9,6 +9,14 @@ export function loadPeopleSuccess(people) {
   };
 }
 
+export function loadPeopleDetailSuccess(peopleDetail) {
+  return {
+    type:types.LOAD_PEOPLE_DETAIL_SUCCESS,
+    peopleDetail
+  };
+}
+
+
 export function loadPeople() {
   return function(dispatch) {
     dispatch(beginAjaxCall());
@@ -30,6 +38,20 @@ export function loadPeople() {
     }).catch(error => {
       throw(error);
     });
+  };
+}
+
+export function loadPeopleDetail(id, next) {
+  return function(dispatch) {
+    dispatch(beginAjaxCall());
+    return fetch(`http://swapi.co/api/people/${id}`)
+      .then(response => response.json())
+      .then((data) => {
+        dispatch(loadPeopleDetailSuccess(data));
+        next();
+      }).catch(error => {
+        throw(error);
+      });
   };
 }
 

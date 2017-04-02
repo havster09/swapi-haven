@@ -3,24 +3,26 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as PropTypes from "react/lib/ReactPropTypes";
 import * as peopleActions from '../../actions/peopleActions';
+import * as ratingsActions from '../../actions/ratingsActions';
 import {Card, CardTitle, CardText} from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow} from 'material-ui/Table';
 import PeopleDisplay from './PeopleDisplay';
+import {store} from '../../index';
 
 
 
 class PeoplePage extends React.Component {
   constructor(props, context) {
     super(props, context);
-    this.state = {searchFilter: '', ratings: []};
+    this.state = {searchFilter: ''};
     this.onSearchChange = this.onSearchChange.bind(this);
     this.handleGetPlanet = this.handleGetPlanet.bind(this);
     this.handleOnRateChange = this.handleOnRateChange.bind(this);
   }
 
   componentDidMount() {
-
+    store.dispatch(peopleActions.loadPeople());
   }
 
   onSearchChange(event) {
@@ -38,48 +40,30 @@ class PeoplePage extends React.Component {
   }
 
   handleOnRateChange(rate, event) {
-    const ratedPersonName = event.target.closest('tr').attributes['data-sw-row'].value;
-    const filteredRatings = this.state.ratings.filter((rating) => rating.name !== ratedPersonName);
-    const existingRating = this.state.ratings.find((rating) => rating.name === ratedPersonName);
-    if (existingRating) {
-      this.setState({
-        ratings: [
-          ...filteredRatings, {name: ratedPersonName, value: parseInt(rate)}
-        ]
-      });
-    }
-    else {
-      this.setState({
-        ratings: [
-          ...this.state.ratings, {name: ratedPersonName, value: parseInt(rate)}
-        ]
-      });
-    }
+    this.props.ratingsActions.votePeopleRatings(rate, event);
   }
 
   render() {
-    let peopleSortedSearched = [...this.props.people];
-    peopleSortedSearched.forEach((person) => {
-      const ratingItem = this.state.ratings.find((rating) => rating.name === person.name);
-      if (ratingItem) {
-        person.rating = ratingItem.value;
-      }
-      else {
-        person.rating = 1;
-      }
-    });
-    peopleSortedSearched.sort((a, b) => {
-      if (a.rating < b.rating) {
-        return 1;
-      }
-      else {
-        return -1;
-      }
-    });
-
-
+    let peopleSortedSearched = this.props.people.slice();
     const displayPeople = peopleSortedSearched.filter(person => person.name.toLowerCase().includes(this.state.searchFilter.toLowerCase()))
-      .map((person) => <PeopleDisplay key={person.url.split('http://swapi.co/api/people/').pop().replace('/', '')} person={person} getPlanet={this.handleGetPlanet} onRateChange={this.handleOnRateChange}/>);
+      .sort((a, b) => {
+      const ratings = this.props.ratings;
+      let aRating = ratings.find((rating)=>rating.name === a.name);
+      if(!aRating) {
+        aRating = {value:1};
+      }
+      let bRating = ratings.find((rating)=>rating.name === b.name);
+        if(!bRating) {
+          bRating = {value:1};
+        }
+        if (aRating.value<bRating.value) {
+          return 1;
+        }
+        else {
+          return -1;
+        }
+      })
+      .map((person) => <PeopleDisplay key={person.url.split('http://swapi.co/api/people/').pop().replace('/', '')} person={person} getPlanet={this.handleGetPlanet} onRateChange={this.handleOnRateChange} ratings={this.props.ratings}/>);
     return (
       <Card>
         <CardTitle title="People" subtitle="from a galaxy far, far away"/>
@@ -116,19 +100,23 @@ PeoplePage.propTypes = {
   searchFilter: PropTypes.string,
   people: PropTypes.array.isRequired,
   planets: PropTypes.array.isRequired,
-  actions: PropTypes.object.isRequired
+  ratings: PropTypes.array.isRequired,
+  peopleActions: PropTypes.object.isRequired,
+  ratingsActions: PropTypes.object.isRequired
 };
 
 function mapStateToProps(state, ownProps) {
   return {
     people: state.people,
-    planets: state.planets
+    planets: state.planets,
+    ratings:state.ratings
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(peopleActions, dispatch)
+    peopleActions: bindActionCreators(peopleActions, dispatch),
+    ratingsActions: bindActionCreators(ratingsActions, dispatch)
   };
 }
 

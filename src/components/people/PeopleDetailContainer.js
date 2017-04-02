@@ -11,6 +11,8 @@ import {Card,CardActions} from 'material-ui/Card';
 import PeopleDetail from "./PeopleDetail";
 import {Quotes} from "./Quotes";
 
+import {store} from '../../index';
+
 
 class PeopleDetailContainer extends React.Component {
   constructor(props, context) {
@@ -57,7 +59,7 @@ class PeopleDetailContainer extends React.Component {
   render() {
     return (
       <Card>
-        <PeopleDetail entity={this.state.person}/>
+        <PeopleDetail peopleDetail={this.props.person||{}}/>
 
         <TextField
           hintText=""
@@ -79,6 +81,7 @@ class PeopleDetailContainer extends React.Component {
 
 PeopleDetailContainer.propTypes = {
   person: PropTypes.object,
+  peopleDetail: PropTypes.object,
   actions: PropTypes.object.isRequired
 };
 
@@ -103,8 +106,14 @@ function mapStateToProps(state, ownProps) {
   if (personId && state.people.length > 0) {
     person = getPersonById(state.people, personId);
   }
+
+  if(!person && state.peopleDetail) {
+    person = state.peopleDetail;
+  }
+
   return {
-    person: person
+    person: person,
+    peopleDetail:state.peopleDetail
   };
 }
 

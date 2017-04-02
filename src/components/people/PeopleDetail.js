@@ -3,11 +3,11 @@ import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColu
 import {CardHeader,CardTitle} from 'material-ui/Card';
 import * as PropTypes from "react/lib/ReactPropTypes";
 
-const PeopleDetail = ({entity}) => {
+const PeopleDetail = ({peopleDetail}) => {
     return (
     <div>
       <CardHeader title="Details"/>
-      <CardTitle title={entity.name} subtitle={entity.gender} />
+      <CardTitle title={peopleDetail.name} subtitle={peopleDetail.gender} />
 
       <Table>
         <TableHeader displaySelectAll={false}>
@@ -21,11 +21,11 @@ const PeopleDetail = ({entity}) => {
         </TableHeader>
         <TableBody displayRowCheckbox={false}>
           <TableRow>
-            <TableRowColumn>{entity.hair_color}</TableRowColumn>
-            <TableRowColumn>{entity.birth_year}</TableRowColumn>
-            <TableRowColumn>{entity.height}</TableRowColumn>
-            <TableRowColumn>{entity.mass}</TableRowColumn>
-            <TableRowColumn>{entity.skin_color}</TableRowColumn>
+            <TableRowColumn>{peopleDetail.hair_color}</TableRowColumn>
+            <TableRowColumn>{peopleDetail.birth_year}</TableRowColumn>
+            <TableRowColumn>{peopleDetail.height}</TableRowColumn>
+            <TableRowColumn>{peopleDetail.mass}</TableRowColumn>
+            <TableRowColumn>{peopleDetail.skin_color}</TableRowColumn>
           </TableRow>
         </TableBody>
       </Table>
@@ -34,7 +34,7 @@ const PeopleDetail = ({entity}) => {
 };
 
 PeopleDetail.propTypes = {
-    entity: PropTypes.object.isRequired
+  peopleDetail: PropTypes.object.isRequired
 };
 
 

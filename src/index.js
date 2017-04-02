@@ -5,7 +5,6 @@ import configureStore from './store/configureStore';
 import {Provider} from 'react-redux';
 import {Router,browserHistory} from 'react-router';
 import routes from './routes';
-import {loadPeople} from './actions/peopleActions';
 import '../node_modules/toastr/build/toastr.min.css';
 import './styles/styles.css';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -16,7 +15,6 @@ const injectTapEventPlugin = require("react-tap-event-plugin");
 injectTapEventPlugin();
 
 export const store = configureStore();
-store.dispatch(loadPeople());
 
 render(
   <MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
